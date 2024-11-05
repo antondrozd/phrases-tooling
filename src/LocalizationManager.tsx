@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useRef, useEffect } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import {
   Table,
   TableHead,
@@ -89,7 +89,6 @@ const LocalizationManager = () => {
   const [filterMissingTranslations, setFilterMissingTranslations] =
     useState(false);
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-  const phraseKeyRef = useRef<HTMLInputElement | null>(null);
   const [localData, setLocalData] = useState<LocalizationRow[]>(data);
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -232,7 +231,6 @@ const LocalizationManager = () => {
       ...prev,
       [id]: true,
     }));
-    phraseKeyRef.current?.focus();
   };
 
   const handleSelectRow = (phraseKey: string) => {
@@ -383,11 +381,6 @@ const LocalizationManager = () => {
                             }
                             fullWidth
                             size="small"
-                            inputRef={
-                              cell.column.id === "phraseKey"
-                                ? phraseKeyRef
-                                : null
-                            }
                           />
                         )
                       ) : (
