@@ -1,6 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
-
 import React, { useMemo, useState, useRef, useEffect } from "react";
 import {
   Table,
@@ -34,9 +31,7 @@ import {
   useReactTable,
   getExpandedRowModel,
   getPaginationRowModel,
-  getSortedRowModel,
   flexRender,
-  SortingState,
 } from "@tanstack/react-table";
 import { type LocalizationRow } from "./types";
 import { data, namespaces } from "./data";
@@ -94,7 +89,6 @@ const LocalizationManager = () => {
   const [filterMissingTranslations, setFilterMissingTranslations] =
     useState(false);
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-  const [sorting, setSorting] = useState<SortingState>([]);
   const phraseKeyRef = useRef<HTMLInputElement | null>(null);
   const [localData, setLocalData] = useState<LocalizationRow[]>(data);
 
@@ -143,12 +137,9 @@ const LocalizationManager = () => {
     getCoreRowModel: getCoreRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
     state: {
-      sorting,
       pagination: { pageIndex: page, pageSize: rowsPerPage },
     },
-    onSortingChange: setSorting,
   });
 
   const toggleRow = (id: string) => {
@@ -330,10 +321,6 @@ const LocalizationManager = () => {
                       header.column.columnDef.header,
                       header.getContext()
                     )}
-                    {{
-                      asc: " 🔼",
-                      desc: " 🔽",
-                    }[header.column.getIsSorted() as string] ?? null}
                   </TableCell>
                 ))
               )}
