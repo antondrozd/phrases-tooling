@@ -7,8 +7,8 @@ import {
   TableRow,
   TextField,
 } from "@mui/material";
-import { languages } from "./data";
-import { LocalizationRow } from "./types";
+import { languages } from "@/data";
+import { type LocalizationRow } from "@/types";
 
 type Props = {
   row: Pick<
@@ -19,18 +19,14 @@ type Props = {
   onUpdateTranslation: (language: string, translation: string) => void;
 };
 
-const ExpandedView: React.FC<Props> = ({
-  row,
-  isEditing,
-  onUpdateTranslation,
-}) => {
+const ExpandedRowView = ({ row, isEditing, onUpdateTranslation }: Props) => {
   return (
     <Box margin={2}>
       <Table size="small">
         <TableHead>
           <TableRow>
-            <TableCell sx={{ fontWeight: 700 }}>Language</TableCell>
-            <TableCell sx={{ fontWeight: 700 }}>Translation</TableCell>
+            <TableCell>Language</TableCell>
+            <TableCell>Translation</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -59,4 +55,4 @@ const ExpandedView: React.FC<Props> = ({
   );
 };
 
-export default ExpandedView;
+export default ExpandedRowView;

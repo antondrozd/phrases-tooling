@@ -11,11 +11,11 @@ import { Edit, Done, Add, Cancel, Delete } from "@mui/icons-material";
 import { useDrag, useDrop, DndProvider, useDragLayer } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
-interface Language {
+type Language = {
   id: string;
   code: string;
   name: string;
-}
+};
 
 const initialLanguages: Language[] = [
   { id: "1", code: "en-US", name: "English (United States)" },
@@ -25,7 +25,7 @@ const initialLanguages: Language[] = [
 
 const ItemType = "LanguageBlock";
 
-interface LanguageBlockProps {
+type Props = {
   language: Language;
   index: number;
   moveLanguageBlock: (dragIndex: number, hoverIndex: number) => void;
@@ -35,9 +35,9 @@ interface LanguageBlockProps {
   onCancelEdit: () => void;
   onDelete: () => void;
   isDragging?: boolean;
-}
+};
 
-const LanguageBlock: React.FC<LanguageBlockProps> = ({
+const LanguageBlock = ({
   language,
   index,
   moveLanguageBlock,
@@ -46,7 +46,7 @@ const LanguageBlock: React.FC<LanguageBlockProps> = ({
   onSaveClick,
   onCancelEdit,
   onDelete,
-}) => {
+}: Props) => {
   const [code, setCode] = useState(language.code);
   const [name, setName] = useState(language.name);
 
@@ -148,7 +148,7 @@ const LanguageBlock: React.FC<LanguageBlockProps> = ({
   );
 };
 
-const CustomDragLayer: React.FC = () => {
+const CustomDragLayer = () => {
   const { isDragging, currentOffset, item } = useDragLayer((monitor) => ({
     isDragging: monitor.isDragging(),
     currentOffset: monitor.getSourceClientOffset(),

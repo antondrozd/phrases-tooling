@@ -33,9 +33,9 @@ import {
   getPaginationRowModel,
   flexRender,
 } from "@tanstack/react-table";
-import { type LocalizationRow } from "./types";
-import { data, namespaces } from "./data";
-import ExpandedView from "./ExpandedView";
+import { type LocalizationRow } from "@/types";
+import { data, namespaces } from "@/data";
+import ExpandedRowView from "./ExpandedRowView";
 import TopPanel from "./TopPanel";
 
 const columnHelper = createColumnHelper<LocalizationRow>();
@@ -71,7 +71,7 @@ const columns = [
   }),
 ];
 
-const LocalizationManager = () => {
+const PhrasesManager = () => {
   const [expandedRows, setExpandedRows] = useState<{ [key: string]: boolean }>(
     {}
   );
@@ -89,6 +89,7 @@ const LocalizationManager = () => {
   const [filterMissingTranslations, setFilterMissingTranslations] =
     useState(false);
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
+
   const [localData, setLocalData] = useState<LocalizationRow[]>(data);
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -103,32 +104,36 @@ const LocalizationManager = () => {
     setFilterMissingTranslations((prev) => !prev);
   };
 
-  const filteredData = useMemo(() => {
-    return localData.filter((row) => {
-      const matchesSearchTerm = row.phraseKey
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase());
-      const matchesNamespace =
-        selectedNamespaces.length === 0 ||
-        selectedNamespaces.includes(row.namespace || "");
-      const hasMissingTranslations = Object.values(row.translations).some(
-        (translation) => translation.trim() === ""
-      );
-      const matchesMissingTranslations =
-        !filterMissingTranslations || hasMissingTranslations;
+  const filteredData = useMemo(
+    () =>
+      localData.filter((row) => {
+        const matchesSearchTerm = row.phraseKey
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase());
+        const matchesNamespace =
+          selectedNamespaces.length === 0 ||
+          selectedNamespaces.includes(row.namespace || "");
+        const hasMissingTranslations = Object.values(row.translations).some(
+          (translation) => translation.trim() === ""
+        );
+        const matchesMissingTranslations =
+          !filterMissingTranslations || hasMissingTranslations;
 
-      return (
-        (matchesSearchTerm && matchesNamespace && matchesMissingTranslations) ||
-        editingRows[row.id]
-      );
-    });
-  }, [
-    localData,
-    searchTerm,
-    selectedNamespaces,
-    filterMissingTranslations,
-    editingRows,
-  ]);
+        return (
+          (matchesSearchTerm &&
+            matchesNamespace &&
+            matchesMissingTranslations) ||
+          editingRows[row.id]
+        );
+      }),
+    [
+      localData,
+      searchTerm,
+      selectedNamespaces,
+      filterMissingTranslations,
+      editingRows,
+    ]
+  );
 
   const table = useReactTable({
     data: filteredData,
@@ -149,7 +154,8 @@ const LocalizationManager = () => {
   };
 
   const toggleEditing = (id: string) => {
-    const row = localData.find((r) => r.id === id);
+    const row = localData.find((r) => r.id === id) as LocalizationRow;
+
     setEditedData((prev) => ({
       ...prev,
       [id]: { ...row },
@@ -169,18 +175,6 @@ const LocalizationManager = () => {
       [id]: false,
     }));
   };
-
-  // const handleSaveEdit = (id: string) => {
-  //   setEditingRows((prev) => ({
-  //     ...prev,
-  //     [id]: false,
-  //   }));
-  //   setEditedData((prev) => {
-  //     const updatedData = { ...prev };
-  //     delete updatedData[id];
-  //     return updatedData;
-  //   });
-  // };
 
   const handleRowChange = (
     id: string,
@@ -274,14 +268,7 @@ const LocalizationManager = () => {
         handleMissingTranslationsToggle={handleMissingTranslationsToggle}
         filterMissingTranslations={filterMissingTranslations}
         selectedNamespaces={selectedNamespaces}
-        handleNamespaceChange={(event) => {
-          const {
-            target: { value },
-          } = event;
-          setSelectedNamespaces(
-            typeof value === "string" ? value.split(",") : value
-          );
-        }}
+        handleNamespaceChange={setSelectedNamespaces}
         handleAddPhrase={handleAddPhrase}
         handleBulkDelete={handleBulkDelete}
         selectedRowsLength={selectedRows.length}
@@ -428,7 +415,7 @@ const LocalizationManager = () => {
                       timeout="auto"
                       unmountOnExit
                     >
-                      <ExpandedView
+                      <ExpandedRowView
                         isEditing={editingRows[row.original.id]}
                         row={row.original}
                         onUpdateTranslation={(lang, translation) =>
@@ -466,4 +453,4 @@ const LocalizationManager = () => {
   );
 };
 
-export default LocalizationManager;
+export default PhrasesManager;

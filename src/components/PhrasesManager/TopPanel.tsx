@@ -20,7 +20,7 @@ import {
   Delete,
   ImportExport,
 } from "@mui/icons-material";
-import { namespaces } from "./data";
+import { namespaces } from "@/data";
 
 type Props = {
   menuAnchor: null | HTMLElement;
@@ -29,7 +29,7 @@ type Props = {
   handleMissingTranslationsToggle: () => void;
   filterMissingTranslations: boolean;
   selectedNamespaces: string[];
-  handleNamespaceChange: () => void;
+  handleNamespaceChange: (selectedNamespaces: string[]) => void;
   handleAddPhrase: () => void;
   handleBulkDelete: () => void;
   selectedRowsLength: number;
@@ -37,7 +37,7 @@ type Props = {
   setSearchTerm: (term: string) => void;
 };
 
-const TopPanel: React.FC<Props> = ({
+const TopPanel = ({
   menuAnchor,
   handleMenuOpen,
   handleMenuClose,
@@ -50,7 +50,7 @@ const TopPanel: React.FC<Props> = ({
   selectedRowsLength,
   searchTerm,
   setSearchTerm,
-}) => {
+}: Props) => {
   const [actionMenuAnchor, setActionMenuAnchor] = useState<null | HTMLElement>(
     null
   );
@@ -85,7 +85,7 @@ const TopPanel: React.FC<Props> = ({
       <Menu
         id="filters-menu"
         anchorEl={menuAnchor}
-        open={Boolean(menuAnchor)}
+        open={!!menuAnchor}
         onClose={handleMenuClose}
       >
         <MenuItem>
@@ -94,7 +94,13 @@ const TopPanel: React.FC<Props> = ({
             size="small"
             multiple
             value={selectedNamespaces}
-            onChange={handleNamespaceChange}
+            onChange={(event) =>
+              handleNamespaceChange(
+                typeof event.target.value === "string"
+                  ? [event.target.value]
+                  : event.target.value
+              )
+            }
             input={<OutlinedInput label="Namespace" />}
             renderValue={(selected) => (
               <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
@@ -123,8 +129,6 @@ const TopPanel: React.FC<Props> = ({
       </Menu>
 
       <IconButton
-        aria-controls="action-menu"
-        aria-haspopup="true"
         onClick={handleActionMenuOpen}
         disabled={selectedRowsLength === 0}
         sx={{ ml: "auto" }}
@@ -133,7 +137,6 @@ const TopPanel: React.FC<Props> = ({
       </IconButton>
 
       <Menu
-        id="action-menu"
         anchorEl={actionMenuAnchor}
         open={Boolean(actionMenuAnchor)}
         onClose={handleActionMenuClose}
